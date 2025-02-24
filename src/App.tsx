@@ -20,61 +20,61 @@ interface ArrayElementProps {
 
 const ArrayElement: React.FC<ArrayElementProps> = ({ value, index, isMid, isActive, isTarget, isInRange, currentStep }) => {
   return (
-    <motion.div
-      className={`
-        relative flex items-center justify-center
-        w-16 h-16 m-2 rounded-xl font-semibold text-xl
-        shadow-lg backdrop-blur-sm
-        transition-colors duration-300
-        ${isInRange ? 'bg-blue-100/90' : 'bg-gray-100/80'}
-        ${isMid ? 'border-2 border-blue-500 bg-blue-50' : ''}
-        ${isActive ? 'bg-yellow-200/90 scale-110' : ''}
-        ${isTarget ? 'bg-green-200/90 ring-4 ring-green-400' : ''}
-        hover:scale-105 hover:shadow-xl
-      `}
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{
-        scale: isActive ? 1.1 : 1,
-        y: isMid ? -20 : 0,
-        opacity: 1,
-        rotate: isTarget ? [0, -5, 5, -5, 5, 0] : 0
-      }}
-      transition={{
-        duration: 0.5,
-        type: "spring",
-        stiffness: 200,
-        damping: 15
-      }}
-    >
-      {value}
-      {isMid && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute -top-8 text-sm font-bold text-blue-600 bg-white px-2 py-1 rounded-md shadow-sm"
-        >
-          middle
-        </motion.div>
-      )}
-      {index === currentStep?.left && (
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="absolute -bottom-8 text-sm font-bold text-blue-600 bg-white px-2 py-1 rounded-md shadow-sm flex items-center"
-        >
-          <ChevronLeft size={16} /> left
-        </motion.div>
-      )}
-      {index === currentStep?.right && (
-        <motion.div
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="absolute -bottom-8 text-sm font-bold text-blue-600 bg-white px-2 py-1 rounded-md shadow-sm flex items-center"
-        >
-          right <ChevronRight size={16} />
-        </motion.div>
-      )}
-    </motion.div>
+    <div className="flex flex-col items-center gap-1">
+      <div className="text-sm text-gray-500 font-mono mb-1">
+        {index}
+      </div>
+      <div className="h-6 flex items-center justify-center">
+        {currentStep && (
+          <>
+            {index === currentStep.left && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-sm font-semibold text-blue-600"
+              >
+                start
+              </motion.div>
+            )}
+            {index === currentStep.mid && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-sm font-semibold text-yellow-600"
+              >
+                mid
+              </motion.div>
+            )}
+            {index === currentStep.right && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-sm font-semibold text-blue-600"
+              >
+                end
+              </motion.div>
+            )}
+          </>
+        )}
+      </div>
+      <motion.div
+        className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-mono relative
+          ${isInRange ? 'bg-blue-100 border-blue-200' : 'bg-gray-100 border-gray-200'}
+          ${isMid ? 'bg-yellow-100 border-yellow-300' : ''}
+          ${isTarget ? 'bg-green-100 border-green-300' : ''}
+          border-2 transition-colors duration-300`}
+      >
+        {value}
+        {isActive && (
+          <motion.div
+            className="absolute inset-0 rounded-xl border-2 border-blue-500"
+            initial={false}
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 0.5 }}
+          />
+        )}
+      </motion.div>
+    </div>
   );
 };
 
@@ -188,7 +188,7 @@ function App() {
         const stepWithComparison = { ...step, comparison: 'larger' as const };
         setCurrentStep(stepWithComparison);
         updateStepDescription(stepWithComparison, 'larger');
-        await sleep(7000);
+        await sleep(5000);
         right = mid - 1;
       }
     }
@@ -202,7 +202,7 @@ function App() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 mt-2.5 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 mt-2 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={() => setShowMoreInfo(false)}
     >
       <motion.div
@@ -256,7 +256,7 @@ function App() {
 
           <button
             onClick={() => setShowMoreInfo(false)}
-            className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="mt-9 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Close
           </button>
@@ -427,7 +427,7 @@ function App() {
                 )}
               </AnimatePresence>
 
-              <div className="absolute bottom-[1px] left-0 right-0 flex flex-col items-center gap-3">
+              <div className="absolute bottom-[-10px] left-0 right-0 flex flex-col items-center gap-3">
                 <button
                   onClick={() => setShowMoreInfo(true)}
                   className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-xl shadow-md border border-blue-100 
